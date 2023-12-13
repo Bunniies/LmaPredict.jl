@@ -1,0 +1,1 @@
+const GAMMA = ["g5-g5", "g5-g0g5"]
