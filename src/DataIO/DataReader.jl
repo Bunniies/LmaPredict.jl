@@ -106,9 +106,48 @@ function read_rest_eigen(path::String, g::String; bc::Bool=false)
     end
 end
 
-function read_LMA_per_config(path::String, g::String; em::String="PA")
+function get_LMAConfig(path::String, g::String, tsrc::Int64; em::String="PA", bc::Bool=false)
 
     modes = Dict("PA"=>32, "VV"=> 64)
-    
 
+    f = readdir(path)
+
+    p_ee = filter(x->occursin(string("mseig", em, "ee"), x), f)
+    p_re = filter(x->occursin(string("mseig", em, "re_ts"), x), f)
+    p_rr = filter(x->occursin(string("mseig", em, "rr_ts"), x), f)
+
+    if length(p_ee) == 0  || length(p_re)  == 0 || length(p_rr)  == 0 
+        error("No dat files found for at least one of  \n - mseig$(em)ee.dat \n - mseig$(em)re_ts$(tsrc) \nCheck your files in $(path)")
+    end
+
+    res_dict = Dict()
+
+    # ee
+    dict_ee = read_eigen_eigen(joinpath(path, p_ee[1]), g)
+    res_dict["ee"] = dict_ee
+    res_dict["rr"] = OrderedDict{String, Vector{Float64}}()
+    
+    # rr
+    tsrc = vcat([map(eachmatch(r"[0-9]+"*".dat", p_rr[k])) do m string(getindex(split(m.match, "."), 1)) end for k in eachindex(p_rr)]...)
+    sorted_idx = sortperm(parse.(Int64, tsrc))
+    for k in sorted_idx
+        res_dict["rr"][tsrc[k]] = read_rest_rest(joinpath(path, p_rr[k]), g) 
+    end
+
+    # re
+    tsrc = vcat([map(eachmatch(r"[0-9]+"*".dat", p_re[k])) do m string(getindex(split(m.match, "."), 1)) end for k in eachindex(p_rr)]...)
+    sorted_idx = sortperm(parse.(Int64, tsrc))
+    res_dict["re"] = OrderedDict{String, Vector{Float64}}()
+    if !bc 
+        for k in sorted_idx
+            res_dict["re"][tsrc[k]] = read_rest_eigen(joinpath(path, p_re[k]), g)
+        end
+    else
+        res_dict["re_bc"] = OrderedDict{String, Vector{Float64}}()
+        for k in sorted_idx
+            res_dict["re"][tsrc[k]], res_dict["re_bc"][tsrc[k]] = read_rest_eigen(joinpath(path, p_re[k]), g, bc=true)
+        end
+    end
+
+    return LMAConfig(parse(Int64,basename(path)), g, modes[em], res_dict )
 end

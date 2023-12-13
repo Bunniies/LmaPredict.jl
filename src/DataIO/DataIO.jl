@@ -2,20 +2,25 @@ module DataIO
 
     using DelimitedFiles, Statistics, OrderedCollections
 
-    mutable struct CnfgEigData
-        id::String
+    mutable struct LMAConfig
+        ncnfg::Int64
         gamma::String
         eigmodes::Int64
-        tsrc::Int64
-        data::OrderedDict{String, Vector{Float64}}
-        CnfgEigData(id, gamma, eigmodes, tsrc, data) = new(id, gamma, eigmodes, tsrc, data)
+        data::Dict{Any, Any}
+        LMAConfig(ncnfg, gamma, eigmodes, data) = new(ncnfg, gamma, eigmodes, data)
     end
-    export CnfgEigData
+    function Base.show(io::IO, a::LMAConfig)
+        println(io, "LMAConfig")
+        println(io, " - Ncnfg :        ", a.ncnfg)
+        println(io, " - Gamma :        ", a.gamma)
+        println(io, " - Eigen modes :  ", a.eigmodes)
+    end
+    export LMAConfig
     
     include("DataConst.jl")
 
     include("DataReader.jl")
-    export read_eigen_eigen, read_rest_rest, read_rest_eigen
+    export read_eigen_eigen, read_rest_rest, read_rest_eigen, get_LMAConfig
 
 
 end
