@@ -1,0 +1,4 @@
+name = "LmaPredict"
+uuid = "4056ae44-f597-46f1-96e9-cdb3146ed00e"
+authors = ["Alessandro Conigli <alessandroconigli@gmail.com>"]
+version = "0.1.0"
