@@ -24,4 +24,4 @@ data_ee = read_eigen_eigen(pp_ee, "g5-g5")
 
 path_config = "/Users/alessandroconigli/Lattice/data/HVP/LMA/A654/1"
 
-lmacnfg = get_LMAConfig(path_config, "g5-g5", 24, em="PA", bc=true)
+lmacnfg = get_LMAConfig(path_config, "g5-g5", em="PA", bc=true)

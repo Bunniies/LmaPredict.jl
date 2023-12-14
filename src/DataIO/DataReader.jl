@@ -106,7 +106,48 @@ function read_rest_eigen(path::String, g::String; bc::Bool=false)
     end
 end
 
-function get_LMAConfig(path::String, g::String, tsrc::Int64; em::String="PA", bc::Bool=false)
+@doc raw"""
+    get_LMAConfig(path::String, g::String; em::String="PA", bc::Bool=false)
+
+This function reads the rr, re and ee  LMA contributions with gamma structure 'g' for all available source positions saved in 'path' with the standard nomenclature.
+
+The following flags are available:  
+
+    - bc::Bool=false  : is set to true re bias correction are read.
+
+    - em::String="PA" : if em="PA" reads files with 32 eigenmodes. If em="VV" reads files with 64 eigenmodes.
+
+It returns a LMAConfig object with the following attributes:  
+
+    - ncnfg : number of the configuration read
+
+    - gamma : gamma structure read
+
+    - eigmodes : number of eigenmodes 
+
+    - data : dictionary with keys "rr", "re" and "ee" containing the corresponding contributions for each source position detected.
+
+Examples:
+```@example
+p = path/to/config_repo/#
+lmacnfg = get_LMAConfig(p, "g5-g5", em="PA", bc=true)
+
+lmacnfg.ncnfc    # number of the processed config
+lmacnfg.gammma   # gamma structured selected
+lmacnfg.eigmodes # number of eigenmodes used for LMA
+lmacnfg.data     # Dict containing "rr", "re" and "ee" contributions
+
+lmacnfg.data["rr"] # Dict containing "rr" contributions for each source position detected in p
+lmacnfg.data["re"] # Dict containing "re" contributions for each source position detected in p
+lmacnfg.data["ee"] # Dict containing "ee" contributions for each source position detected in p
+
+lmacnfg.data["rr"]["0"] #  "rr" contribution at source position 0 
+lmacnfg.data["re"]["0"] #  "re" contribution at source position 0 
+lmacnfg.data["ee"]["0"] #  "ee" contribution at source position 0 
+
+```   
+"""
+function get_LMAConfig(path::String, g::String; em::String="PA", bc::Bool=false)
 
     modes = Dict("PA"=>32, "VV"=> 64)
 
@@ -117,7 +158,7 @@ function get_LMAConfig(path::String, g::String, tsrc::Int64; em::String="PA", bc
     p_rr = filter(x->occursin(string("mseig", em, "rr_ts"), x), f)
 
     if length(p_ee) == 0  || length(p_re)  == 0 || length(p_rr)  == 0 
-        error("No dat files found for at least one of  \n - mseig$(em)ee.dat \n - mseig$(em)re_ts$(tsrc) \nCheck your files in $(path)")
+        error("No dat files found for at least one of  \n - mseig$(em)ee.dat \n - mseig$(em)re_ts \nCheck your files in $(path)")
     end
 
     res_dict = Dict()
@@ -149,5 +190,5 @@ function get_LMAConfig(path::String, g::String, tsrc::Int64; em::String="PA", bc
         end
     end
 
-    return LMAConfig(parse(Int64,basename(path)), g, modes[em], res_dict )
+    return LMAConfig(parse(Int64,basename(path)), g, modes[em], res_dict)
 end
