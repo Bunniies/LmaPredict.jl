@@ -25,3 +25,29 @@ data_ee = read_eigen_eigen(pp_ee, "g5-g5")
 path_config = "/Users/alessandroconigli/Lattice/data/HVP/LMA/A654/1"
 
 lmacnfg = get_LMAConfig(path_config, "g5-g5", em="PA", bc=true)
+
+## Exploring data
+lmacnfg.data["rr"]
+lmacnfg.data["ee"]
+lmacnfg.data["re"]
+
+##
+using PyPlot, LaTeXStrings
+TSRC = "0"
+
+rr = lmacnfg.data["rr"][TSRC]
+ee = lmacnfg.data["ee"][TSRC]
+re = lmacnfg.data["re"][TSRC]
+tot = rr + ee + re
+
+xx = collect(1:length(rr))
+scatter(xx, rr, label="r-r")
+scatter(xx, ee, label="e-e")
+scatter(xx, re, label="r-e")
+scatter(xx, tot, label="tot")
+xlabel(L"$x_0/a$")
+legend()
+display(gcf())
+PyPlot.close()
+#
+
