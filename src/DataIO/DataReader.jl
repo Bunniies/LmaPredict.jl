@@ -1,4 +1,23 @@
 @doc raw"""
+    read_eigen_vals(path::String, g::String)
+
+Given a path and a gamma structre g as defined in DataConst.GAMMA, this function reads the eigenvalues for a single configuration listed in the dat file.  
+
+It returns a Vector{Float64} with the eigenvalues.
+"""
+function read_eigen_vals(path::String, g::String)
+    
+    if !(g in GAMMA)
+        error("The gamma structure $(g) is not supported. Please update the GAMMA database in DataConst.jl")
+    end
+
+    f = readdlm(path)
+    eigvals = filter(entry -> typeof(entry) <: Float64, f[:,1])
+
+    return eigvals
+end
+
+@doc raw"""
     read_eigen_eigen(path::String, g::String)
 
 Given a path and a gamma structre g as defined in DataConst.GAMMA, this function reads the eigen-eigen contribution of LMA for a single configuration and  for all the source positions listed in the dat file.
@@ -109,7 +128,7 @@ end
 @doc raw"""
     get_LMAConfig(path::String, g::String; em::String="PA", bc::Bool=false)
 
-This function reads the rr, re and ee  LMA contributions with gamma structure 'g' for all available source positions saved in 'path' with the standard nomenclature.
+This function reads the eigenvalues, rr, re and ee  LMA contributions with gamma structure 'g' for all available source positions saved in 'path' with the standard nomenclature.
 
 The following flags are available:  
 
@@ -125,7 +144,7 @@ It returns a LMAConfig object with the following attributes:
 
     - eigmodes : number of eigenmodes 
 
-    - data : dictionary with keys "rr", "re" and "ee" containing the corresponding contributions for each source position detected.
+    - data : dictionary with keys "eigvals", "rr", "re" and "ee" containing the eigenvalues and the corresponding contributions for each source position detected.
 
 Examples:
 ```@example
@@ -135,8 +154,9 @@ lmacnfg = get_LMAConfig(p, "g5-g5", em="PA", bc=true)
 lmacnfg.ncnfc    # number of the processed config
 lmacnfg.gammma   # gamma structured selected
 lmacnfg.eigmodes # number of eigenmodes used for LMA
-lmacnfg.data     # Dict containing "rr", "re" and "ee" contributions
+lmacnfg.data     # Dict containing "eigvals", "rr", "re" and "ee" contributions
 
+lmacnfg.data["eigvals"] # Array containing the eigenvalues detected in p
 lmacnfg.data["rr"] # Dict containing "rr" contributions for each source position detected in p
 lmacnfg.data["re"] # Dict containing "re" contributions for each source position detected in p
 lmacnfg.data["ee"] # Dict containing "ee" contributions for each source position detected in p
@@ -153,15 +173,20 @@ function get_LMAConfig(path::String, g::String; em::String="PA", bc::Bool=false)
 
     f = readdir(path)
 
+    p_eigvals = filter(x->occursin(string("eigvals"), x), f)
     p_ee = filter(x->occursin(string("mseig", em, "ee"), x), f)
     p_re = filter(x->occursin(string("mseig", em, "re_ts"), x), f)
     p_rr = filter(x->occursin(string("mseig", em, "rr_ts"), x), f)
 
-    if length(p_ee) == 0  || length(p_re)  == 0 || length(p_rr)  == 0 
-        error("No dat files found for at least one of  \n - mseig$(em)ee.dat \n - mseig$(em)re_ts \nCheck your files in $(path)")
+    if length(p_eigvals) == 0 || length(p_ee) == 0  || length(p_re)  == 0 || length(p_rr)  == 0 
+        error("No dat files found for at least one of \n - eigvals.dat \n - mseig$(em)ee.dat \n - mseig$(em)re_ts \nCheck your files in $(path)")
     end
 
     res_dict = Dict()
+
+    # eigenvalues
+    eigvals = read_eigen_vals(joinpath(path, p_eigvals[1]), g)
+    res_dict["eigvals"] = eigvals
 
     # ee
     dict_ee = read_eigen_eigen(joinpath(path, p_ee[1]), g)

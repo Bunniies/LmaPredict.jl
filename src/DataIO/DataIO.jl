@@ -20,7 +20,7 @@ module DataIO
     include("DataConst.jl")
 
     include("DataReader.jl")
-    export read_eigen_eigen, read_rest_rest, read_rest_eigen, get_LMAConfig
+    export read_eigen_vals, read_eigen_eigen, read_rest_rest, read_rest_eigen, get_LMAConfig
 
 
 end
