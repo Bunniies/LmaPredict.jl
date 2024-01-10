@@ -22,16 +22,16 @@ data_ee = read_eigen_eigen(pp_ee, "g5-g5")
 ## Reading for a given config the rr, ee and re contributions 
 # for a given tsource and gamma structure. Data stored in CnfgEigData
 
-path_config = "/Users/alessandroconigli/Lattice/data/HVP/LMA/A654/1"
+path_config = "/Users/alessandroconigli/Lattice/data/HVP/LMA/A654/136"
 
 lmacnfg = get_LMAConfig(path_config, "g5-g5", em="PA", bc=true)
 
-## Exploring data
+# Exploring data
 lmacnfg.data["rr"]
 lmacnfg.data["ee"]
 lmacnfg.data["re"]
 
-##
+
 using PyPlot, LaTeXStrings
 TSRC = "0"
 

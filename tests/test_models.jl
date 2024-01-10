@@ -173,10 +173,13 @@ savefig(joinpath(path_plot, "predict_rr_vs_re.pdf"))
 # savefig(joinpath(path_plot, "ee_vs_re.pdf"))
 close("all")
 
-##
 
-x = hcat(rr_data[:,30]...)
-y = hcat(abs.(re_data[:,30])...)
+
+
+## TEST WITH A SINGLE TIME SLICE
+
+x = hcat(rr_data[:,10]...)
+y = hcat(re_data[:,10]...)
 scatter(x,y)
 display(gcf())
 close("all")
