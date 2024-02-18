@@ -23,5 +23,8 @@ docs/site/
 # environment.
 Manifest.toml
 
+
+**.DS_Store
+notebooks/benchmarks/**
 notebooks/.ipynb_checkpoints/**
 src/DataIO/.ipynb_checkpoints/**
