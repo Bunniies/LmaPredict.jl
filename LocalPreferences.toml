@@ -1,0 +1,5 @@
+[JULIA]
+JULIA_NUM_THREADS = 12
+[Flux]
+gpu_backend = "Metal"
+

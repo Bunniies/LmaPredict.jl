@@ -25,6 +25,7 @@ Manifest.toml
 
 
 **.DS_Store
-notebooks/benchmarks/**
+benchmarks/*
+!benchmarks/highscores/
 notebooks/.ipynb_checkpoints/**
 src/DataIO/.ipynb_checkpoints/**
