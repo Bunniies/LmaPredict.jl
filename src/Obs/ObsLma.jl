@@ -1,6 +1,10 @@
-function corr_obs_rr(data::Array{Float64,3}, id::String)
+function corr_obs(data::Array{Float64,3}, id::String; idm::Union{Nothing, Vector{Int64}}=nothing, nms::Union{Int64,Nothing}=nothing)
+
 
     tvals, ncnfg, nsrcs = size(data)
+    idm = isnothing(idm) ? collect(1:ncnfg) : idm
+    nms = isnothing(nms) ? ncnfg : nms
+
     println("tvals: ", tvals)
     println("ncnfg: ", ncnfg)
     println("nsrcs: ", nsrcs)
@@ -12,7 +16,7 @@ function corr_obs_rr(data::Array{Float64,3}, id::String)
     obs = Vector{uwreal}(undef, tvals)
     
     for t in 1:tvals
-        obs[t] = uwreal(data_ave_src[t,:], id)
+        obs[t] = uwreal(data_ave_src[t,:], id, idm, nms)
     end
     
     return obs

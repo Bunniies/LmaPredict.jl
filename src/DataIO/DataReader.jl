@@ -176,7 +176,7 @@ function get_LMAConfig(path::String, g::String; em::String="PA", bc::Bool=false)
     end
 
     # re
-    tsrc = vcat([map(eachmatch(r"[0-9]+"*".dat", p_re[k])) do m string(getindex(split(m.match, "."), 1)) end for k in eachindex(p_rr)]...)
+    tsrc = vcat([map(eachmatch(r"[0-9]+"*".dat", p_re[k])) do m string(getindex(split(m.match, "."), 1)) end for k in eachindex(p_re)]...)
     sorted_idx = sortperm(parse.(Int64, tsrc))
     res_dict["re"] = OrderedDict{String, Vector{Float64}}()
     if !bc 

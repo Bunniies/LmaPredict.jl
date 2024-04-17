@@ -17,6 +17,6 @@ module Obs
     export Corr
 
     include("ObsLma.jl")
-    export corr_obs_rr
+    export corr_obs
 
 end
