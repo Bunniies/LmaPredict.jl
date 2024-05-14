@@ -51,8 +51,7 @@ function gridSearch_varyingTrainingData(
         results_matrix_name_beforeBC = output_directory * "results_beforeBC_" * "$n_configs" * "_" * "$k_fold" * "_$curr_date.csv"
         results_matrix_name_afterBC = output_directory * "results_afterBC_" * "$n_configs" * "_" * "$k_fold" * "_$curr_date.csv"
         
-        #for i in 1:n_combinations
-        for i in 580:582
+        for i in 1:n_combinations
             model = combinations_matrix[i,1]
             optimizer = combinations_matrix[i,2]
             loss_function = combinations_matrix[i,3]
