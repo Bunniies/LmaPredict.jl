@@ -1,4 +1,4 @@
-function applyBC(out_of_sample_predictions, model, j, n, k, train_size, test_size)
+function applyBC(out_of_sample_predictions, j, n, k, train_size, test_size)
     
     χ²_model = Array{Float32}(undef, length(percentages_bc))
     χ²_configs = Array{Float32}(undef, length(percentages_bc))

@@ -1,3 +1,5 @@
+using Metal
+
 include("BC.jl")
 
 function gridSearch_varyingTrainingData(
@@ -9,8 +11,7 @@ function gridSearch_varyingTrainingData(
     output_data_train_standardized,
     input_data_test_standardized,
     input_data_validation_standardized,
-    output_shape_validation,
-    results_matrix_name
+    output_shape_validation
     )
 
     scores_table_beforeBC_header = [
@@ -47,13 +48,11 @@ function gridSearch_varyingTrainingData(
         train_size = Int(n_configs / k_fold)
         test_size = n_configs - train_size
     
-        outputn = n_configs
-        outputk = k_fold
-    
         results_matrix_name_beforeBC = output_directory * "results_beforeBC_" * "$n_configs" * "_" * "$k_fold" * "_$curr_date.csv"
         results_matrix_name_afterBC = output_directory * "results_afterBC_" * "$n_configs" * "_" * "$k_fold" * "_$curr_date.csv"
         
-        for i in 1:n_combinations
+        #for i in 1:n_combinations
+        for i in 580:582
             model = combinations_matrix[i,1]
             optimizer = combinations_matrix[i,2]
             loss_function = combinations_matrix[i,3]
@@ -98,13 +97,13 @@ function gridSearch_varyingTrainingData(
                                 grads = gradient(m -> loss_function(m, x, y), model)
                                 Flux.update!(optim, model, grads[1])
                             end
-                            out_of_sample_predictions = (model(input_data_test_standardized[j][n][k]) .* std_output_train) .+ mean_output_train
+                            out_of_sample_predictions = (model(input_data_test_standardized[j][n][k]) .* std_output_train) .+ mean_output_train 
                             validation_set_predictions = (model(input_data_validation_standardized[j][n][k]) .* std_output_train) .+ mean_output_train
                             
                             R_scores_val[e] = 1 - (Flux.mse(validation_set_predictions, output_shape_validation, agg=sum) / Flux.mse(mean_train_val, output_shape_validation, agg=sum))
                             R_scores[e] = 1 - (Flux.mse(out_of_sample_predictions, output_shape_test[j][n][k], agg=sum) / Flux.mse(mean_train, output_shape_test[j][n][k], agg=sum))
     
-                            (χ²_scores_model[e,:], χ²_scores_computedconfigs[e,:]) = applyBC(out_of_sample_predictions, model, j, n, k, train_size, test_size)
+                            (χ²_scores_model[e,:], χ²_scores_computedconfigs[e,:]) = applyBC(out_of_sample_predictions, j, n, k, train_size, test_size)
                         end
                     end
                 

@@ -5,15 +5,16 @@ include("utils/writeCSV.jl")
 
 curr_date = now()
 
-output_directory = "/home/users/kphth/lgeyer/LmaPredict/gridSearch/ee+ev/"
+output_directory = "/Users/lukasgeyer/Studium/Computational Sciences/Masterarbeit/Tool Allesandro/repo/LmaPredict/results/gridSearch/ee+ev/"
 
 previous_results_matrix_name = output_directory * "results_2024-04-13.csv"
 
 combination_matrix_name = output_directory * "models_$curr_date.csv"
 results_matrix_name = output_directory * "results_$curr_date.csv"
-path_config = "/home/users/kphth/lgeyer/Daten Simon/dat"
+path_config = "/Users/lukasgeyer/Studium/Computational Sciences/Masterarbeit/Daten Simon/dat"
 
-fname = readdir(path_config)[2:5001]
+#fname = readdir(path_config)[2:5001]
+fname = readdir(path_config)[2:1001]
 idx = sortperm( parse.(Int64, fname))
 fname = fname[idx]
 em_n = "VV"
@@ -36,7 +37,8 @@ TVALS = length(cnfgarr[1].data["rr"][TSRC]) - 1
 NCNFG = length(cnfgarr)
 
 n_times = 5
-n_configs_k_folds = [(500, 5), (500, 4), (500, 2)]
+#n_configs_k_folds = [(500, 5), (500, 4), (500, 2)]
+n_configs_k_folds = [(500, 5)]
 isolated_testset_size = NCNFG - maximum([x[1] for x in n_configs_k_folds])
 training_setups = length(n_configs_k_folds)
 
@@ -424,14 +426,12 @@ end
 optimizers = vcat(optimizers...)
 
 function loss_mse(flux_model, x, y)
-    batch_size = size(x)[2]
     ŷ = flux_model(x)
     
     return Flux.mse(ŷ, y, agg=sum)
 end
 
 function loss_mae(flux_model, x, y)
-    batch_size = size(x)[2]
     ŷ = flux_model(x)
     
     return Flux.mae(ŷ, y, agg=sum)
@@ -464,6 +464,5 @@ gridSearch_varyingTrainingData(
     output_data_train_standardized,
     input_data_test_standardized,
     input_data_validation_standardized,
-    output_shape_validation,
-    results_matrix_name
+    output_shape_validation
     )
