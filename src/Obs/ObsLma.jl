@@ -11,8 +11,6 @@ function corr_obs(data::Array{Float64,3}, id::String; idm::Union{Nothing, Vector
 
     data_ave_src = dropdims(mean(data, dims=3),dims=3)
 
-    println(size(data_ave_src))
-
     obs = Vector{uwreal}(undef, tvals)
     
     for t in 1:tvals

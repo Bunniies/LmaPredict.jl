@@ -4,6 +4,8 @@ authors = ["Alessandro Conigli <alessandroconigli@gmail.com>"]
 version = "0.1.0"
 
 [deps]
+ADerrors = "5e92007d-7bf1-471c-8ceb-4591b8b567a9"
+BDIO = "375f315e-f2c4-11e9-2ef9-134f02f79e27"
 DelimitedFiles = "8bb1440f-4735-579b-a4ab-409b98df4dab"
 MLUtils = "f1d291b0-491e-4a28-83b9-f70985020b54"
 OrderedCollections = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"

@@ -7,14 +7,13 @@ These are files with mseig**ee.dat extension.
 It returns an OrderedDict of Vector{Float64}  where the keys are the source positions while the values are Vector{Float64} containing the eigen-eigen contribution of the corresponding key with length equals the timeslices T of the lattice.
 """
 function read_eigen_eigen(path::String, g::String)
-    
     if !(g in GAMMA)
         error("The gamma structure $(g) is not supported. Please update the GAMMA database in DataConst.jl")
     end
 
     f = readdlm(path)
-    tvals = parse(Int64, split(filter(x-> typeof(x)<:AbstractString && occursin("#T=", x), f)[1], "=")[end])
-
+    # tvals = parse(Int64, split(filter(x-> typeof(x)<:AbstractString && occursin("#T=", x), f)[1], "=")[end])
+    tvals = 48
     dlm_tsrc = findall(x-> typeof(x)<:AbstractString && occursin("#tsrc", x), f)
     dlm_g    = findall(x-> typeof(x)<:AbstractString && occursin("#"*g, x), f)
 
